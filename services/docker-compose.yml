@@ -1,0 +1,176 @@
+version: "3.4"
+
+services:
+  consul:
+    image: consul
+    hostname: consul
+    ports:
+      - "8500:8500"
+      - "8600:8600/udp"
+    restart: always
+    command: consul agent -dev -client 0.0.0.0
+    environment:
+      - "CONSUL_BIND_INTERFACE=eth0"
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+
+  trade-me-gateway:
+    extends:
+      file: ../trade-me-api/docker-compose.yml
+      service: trade-me-gateway
+    depends_on:
+      - rabbitmq
+    links:
+      - consul
+    environment:
+      - spring.profiles.active=prod
+      - spring.cloud.consul.host=consul
+    ports: 
+      - "8081:8080"
+
+  trade-me-market:
+    extends:
+      file: ../trade-me-api/docker-compose.yml
+      service: trade-me-market
+    depends_on:
+      - rabbitmq
+    links:
+      - consul
+    environment:
+      - spring.profiles.active=prod
+      - spring.cloud.consul.host=consul
+    ports: 
+      - "8082:8080"
+
+  trade-me-membership:
+    extends:
+      file: ../trade-me-api/docker-compose.yml
+      service: trade-me-membership
+    depends_on:
+      - rabbitmq
+    links:
+      - consul
+    environment:
+      - spring.profiles.active=prod
+      - spring.cloud.consul.host=consul
+    ports: 
+      - "8083:8080"
+
+  trade-me-education:
+    extends:
+      file: ../trade-me-api/docker-compose.yml
+      service: trade-me-education
+    depends_on:
+      - rabbitmq
+    links:
+      - consul
+    environment:
+      - spring.profiles.active=prod
+      - spring.cloud.consul.host=consul
+    ports: 
+      - "8084:8080"
+
+  regulations-engine:
+    extends:
+      file: ../trade-me-api/docker-compose.yml
+      service: regulations-engine
+    depends_on:
+      - rabbitmq
+    links:
+      - consul
+    environment:
+      - spring.profiles.active=prod
+      - spring.cloud.consul.host=consul
+    ports: 
+      - "8085:8080"
+
+  search-engine:
+    extends:
+      file: ../trade-me-api/docker-compose.yml
+      service: search-engine
+    depends_on:
+      - rabbitmq
+    links:
+      - consul
+    environment:
+      - spring.profiles.active=prod
+      - spring.cloud.consul.host=consul
+    ports: 
+      - "8086:8080"
+
+  db:
+    image: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - postgres-log:/var/log/postgresql
+    restart: always
+    environment:
+      POSTGRES_DB: jdbc:postgres://localhost:5432/trademe
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+
+  prometheus:
+    image: prom/prometheus:latest
+    restart: always
+    volumes:
+      - prometheus-data:/prometheus
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=365d'
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:latest
+    restart: always
+    environment:
+      - GF_PATHS_CONFIG=/etc/grafana/grafana.ini
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+      - ./grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    ports:
+      - 3000:3000
+  
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.1
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.13.1
+    ports:
+      - 5601:5601
+
+volumes:
+  prometheus-data:
+  grafana-data:
+  postgres-data:
+  postgres-log:
+  elasticsearch-data:

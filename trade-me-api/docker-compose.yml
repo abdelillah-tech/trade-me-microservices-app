@@ -1,0 +1,54 @@
+services:
+  trade-me-gateway:
+    build:
+      context: ./trade-me-gateway/
+      dockerfile: ./Dockerfile
+    restart: always
+    volumes:
+      - ./trade-me-gateway/src:/usr/src/app/src
+      - ./trade-me-gateway/target:/usr/src/app/target
+
+  trade-me-market:
+    build:
+      context: ./trade-me-market/
+      dockerfile: ./Dockerfile
+    restart: always
+    volumes:
+      - ./trade-me-market/src:/usr/src/app/src
+      - ./trade-me-market/target:/usr/src/app/target
+
+  trade-me-membership:
+    build:
+      context: ./trade-me-membership/
+      dockerfile: ./Dockerfile
+    restart: always
+    volumes:
+      - ./trade-me-membership/target:/usr/src/app/target
+      - ./trade-me-membership/src:/usr/src/app/src
+
+  trade-me-education:
+    build:
+      context: ./trade-me-education/
+      dockerfile: ./Dockerfile
+    restart: always
+    volumes:
+      - ./trade-me-education/src:/usr/src/app/src
+      - ./trade-me-education/target:/usr/src/app/target
+
+  regulations-engine:
+    build:
+      context: ./regulations-engine/
+      dockerfile: ./Dockerfile
+    restart: always
+    volumes:
+      - ./regulations-engine/src:/usr/src/app/src
+      - ./regulations-engine/target:/usr/src/app/target
+
+  search-engine:
+    build:
+      context: ./search-engine/
+      dockerfile: ./Dockerfile
+    restart: always
+    volumes:
+      - ./search-engine/src:/usr/src/app/src
+      - ./search-engine/target:/usr/src/app/target
