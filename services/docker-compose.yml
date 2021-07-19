@@ -29,6 +29,7 @@ services:
       service: trade-me-gateway
     depends_on:
       - rabbitmq
+      - db
     links:
       - consul
     environment:
@@ -43,6 +44,7 @@ services:
       service: trade-me-market
     depends_on:
       - rabbitmq
+      - db
     links:
       - consul
     environment:
@@ -57,6 +59,7 @@ services:
       service: trade-me-membership
     depends_on:
       - rabbitmq
+      - db
     links:
       - consul
     environment:
@@ -71,6 +74,7 @@ services:
       service: trade-me-education
     depends_on:
       - rabbitmq
+      - db
     links:
       - consul
     environment:
@@ -83,8 +87,10 @@ services:
     extends:
       file: ../trade-me-api/docker-compose.yml
       service: regulations-engine
+    hostname: regulations-engine
     depends_on:
       - rabbitmq
+      - db
     links:
       - consul
     environment:
@@ -99,6 +105,7 @@ services:
       service: search-engine
     depends_on:
       - rabbitmq
+      - db
     links:
       - consul
     environment:
@@ -109,12 +116,13 @@ services:
 
   db:
     image: postgres
+    hostname: postgres
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - postgres-log:/var/log/postgresql
     restart: always
     environment:
-      POSTGRES_DB: jdbc:postgres://localhost:5432/trademe
+      POSTGRES_DB: trademe
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
     ports:

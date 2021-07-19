@@ -7,11 +7,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableFeignClients
 public class RegulationsEngineApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(RegulationsEngineApplication.class, args);
     }
-
 }
