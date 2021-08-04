@@ -94,17 +94,20 @@ public class MembershipWorkflowService {
             case regulation:
                 if (checkRegulated(userWorkflow.getEmail())) {
                     modifyUserStage(id, Stage.payment);
+                    System.out.println(Stage.regulation);
                     return getStage(id);
                 }
             case payment:
                 if (checkPayment(id)) {
                     var member = memberService.save(toMemberEntity.from(userWorkflow));
                     if(member!=null) modifyUserStage(id, Stage.registration);
+                    System.out.println(Stage.payment);
                     return getStage(id);
                 }
             case registration:
                 if (checkRegistered(userWorkflow.getEmail())) {
                     delete(userWorkflow.getId());
+                    System.out.println(Stage.registration);
                     return "Your are registered you can login to your account";
                 }
         }

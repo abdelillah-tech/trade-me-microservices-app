@@ -1,24 +1,24 @@
-package com.example.regulationsengine.entities;
+package com.example.tradememarket.entities;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.UUID;
 
-@Entity
 @Data
+@Entity
 @RequiredArgsConstructor
-public class ProjectRegulationEntity {
+public class ProjectEntity {
     @Id
     @GeneratedValue
     private UUID id;
 
-    private Boolean licence;
+    private String userEmail;
 
-    private Boolean contract;
+    private String name;
 
-    private Boolean authorisation;
 }

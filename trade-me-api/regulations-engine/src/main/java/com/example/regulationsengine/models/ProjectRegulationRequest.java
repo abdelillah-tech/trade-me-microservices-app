@@ -7,9 +7,6 @@ import java.util.UUID;
 
 @Data
 @RequiredArgsConstructor
-public class ProjectRegulation {
-    private UUID id;
-    private Boolean licence;
-    private Boolean contract;
-    private Boolean authorisation;
+public class ProjectRegulationRequest {
+    private UUID projectId;
 }

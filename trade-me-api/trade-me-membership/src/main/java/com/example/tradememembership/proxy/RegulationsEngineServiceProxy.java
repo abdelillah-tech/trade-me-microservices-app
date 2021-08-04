@@ -2,8 +2,10 @@ package com.example.tradememembership.proxy;
 
 import com.example.tradememembership.models.MemberRegulation;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
+@Component
 @FeignClient("regulations-engine")
 public interface RegulationsEngineServiceProxy {
     @PostMapping("/member-regulation/create-member-regulation")

@@ -2,7 +2,6 @@ package com.example.regulationsengine.services;
 
 import com.example.regulationsengine.entities.MemberRegulationEntity;
 import com.example.regulationsengine.models.MemberRegulation;
-import com.example.regulationsengine.models.SetMemberRegulationRequestBody;
 import com.example.regulationsengine.repositories.MemberRegulationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
